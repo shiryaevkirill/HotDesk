@@ -1,0 +1,53 @@
+﻿@model HotDesk.Models.AuthModels.LoginModel
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+    <link type="text/css" href="~/css/GeneralStyle.css" rel="stylesheet" />
+    <link type="text/css" href="~/css/LoginStyle.css" rel="stylesheet" />
+</head>
+<body>
+
+    <div class="logo"><h1>HotDesk</h1></div>
+
+
+    @using (Html.BeginForm("Login", "Authorization", FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+        <div class="login-section">
+
+            <div class="login-section-item">
+                <div class="login-section-item-label">
+                    @Html.LabelFor(m => m.Login)
+                </div>
+                <div>
+                    @Html.EditorFor(m => m.Login)
+                    @Html.ValidationMessageFor(m => m.Login)
+                </div>
+            </div>
+
+            <div class="login-section-item">
+                <div class="login-section-item-label">
+                    @Html.LabelFor(m => m.Password)
+                </div>
+                <div>
+                    @Html.EditorFor(m => m.Password)
+                    @Html.ValidationMessageFor(m => m.Password)
+                </div>
+            </div>
+
+            <div class="login-button">
+                <button type="submit">Sign in</button>
+            </div>
+
+        </div>
+    }
+
+@*<div>
+    <a type="submit" href="@Url.Action("Register", "DeskAuthorization")">Create an account</a>
+</div>*@
+
+
+</body>
+</html>
+

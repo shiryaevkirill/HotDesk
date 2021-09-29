@@ -1,0 +1,42 @@
+﻿@using HotDesk.Models.DbModels
+@model List<Device>
+
+<div class="centered">
+    <div class="data-container glass-effect">
+
+
+        <div class="data-list-inline column-headers">
+            <ul>
+                <li>Id</li>
+                <li id="user-name">Device name</li>
+                <li id="user-name">Device type</li>
+            </ul>
+
+        </div>
+
+
+        <div class="fixed-container">
+            @{
+                foreach (Device device in Model)
+                {
+
+
+                    <div class="data-list-inline">
+                        <ul>
+                            <li>@device.Id</li>
+                            <li id="user-name">@device.DeviceName</li>
+                            <li id="user-name">@device.DeviceType</li>
+                            <li class="cross delete-device" id="@Convert.ToString(device.Id)"></li>
+                        </ul>
+
+                    </div>
+
+                }
+            }
+        </div>
+
+
+    </div>
+
+    <div id="add-device-view" type="button" class="plus"></div>
+</div>

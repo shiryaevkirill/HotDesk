@@ -1,0 +1,40 @@
+﻿@using HotDesk.Models.DbModels
+@model List<Role>
+
+<div class="centered">
+    <div class="data-container glass-effect">
+
+
+        <div class="data-list-inline column-headers">
+            <ul>
+                <li>Id</li>
+                <li id="user-name">Role name</li>
+            </ul>
+
+        </div>
+
+
+        <div class="fixed-container">
+            @{
+                foreach (Role role in Model)
+                {
+
+
+                    <div class="data-list-inline">
+                        <ul>
+                            <li>@role.Id</li>
+                            <li id="user-name">@role.RoleName</li>
+                            <li class="cross delete-role" id="@Convert.ToString(role.Id)"></li>
+                        </ul>
+
+                    </div>
+
+                }
+            }
+        </div>
+
+
+    </div>
+
+    <div id="add-role-view" type="button" class="plus"></div>
+</div>

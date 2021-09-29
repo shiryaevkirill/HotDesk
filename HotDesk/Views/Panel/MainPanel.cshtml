@@ -1,0 +1,57 @@
+﻿
+@model HotDesk.Models.AdminModels.AddEmployeeModel
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+    <link type="text/css" href="~/css/LoginStyle.css" rel="stylesheet" />
+    <link type="text/css" href="~/css/GeneralStyle.css" rel="stylesheet" />
+    <link type="text/css" href="~/css/PanelStyle.css" rel="stylesheet" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@500;700&display=swap" rel="stylesheet">
+    <script type="text/javascript" src="@Url.Content("~/lib/jquery/dist/jquery.min.js")"></script>
+    <script type="text/javascript" src="@Url.Content("~/lib/jquery-ajax-unobtrusive/jquery.unobtrusive-ajax.min.js")"></script>
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+    @{
+        if (User.IsInRole("Admin"))
+        {
+            <script type="text/javascript" src="@Url.Content("~/js/AdminMenuHelper.js")"></script>
+        }
+    }
+</head>
+<body>
+    <header class="glass-effect">
+        <div class="logo"><h2>HotDesk</h2></div>
+
+        <div class="logout-btn">
+            @using (Html.BeginForm("Logout", "Authorization"))
+            {
+                <button type="submit">Sign out</button>
+            }
+        </div>
+        <div class="user-name">
+            @ViewData["name"]
+        </div>
+    </header>
+
+
+
+    @{
+        if (User.IsInRole("Admin"))
+        {
+            @await Html.PartialAsync("~/Views/Admin/AdminMenu.cshtml")
+        }
+        else
+        {
+            @await Html.PartialAsync("~/Views/User/UserMenu.cshtml")
+        }
+    }
+
+    <div id="result"></div>
+    <div id="action"></div>
+
+
+</body>
+</html>

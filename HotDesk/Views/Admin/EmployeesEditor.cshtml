@@ -1,0 +1,48 @@
+﻿@model HotDesk.Models.AdminModels.EmployeesEditor
+@using HotDesk.Models.DbModels
+
+<div class="centered">
+    <div class="data-container glass-effect">
+
+
+        <div class="data-list-inline column-headers">
+            <ul>
+                <li>Id</li>
+                <li id="user-name">Name</li>
+                <li>Login</li>
+                <li>Password</li>
+                <li>Role</li>
+            </ul>
+
+        </div>
+
+
+        <div class="fixed-container">
+            @{
+                foreach (Employee emp in Model.Employees)
+                {
+
+
+                    <div class="data-list-inline">
+                        <ul>
+                            <li>@emp.Id</li>
+                            <li id="user-name">@emp.Name @emp.Surname</li>
+                            <li>@emp.Login</li>
+                            <li>@emp.Password</li>
+                            <li>@Model.Roles.First(m => m.Id == emp.IdRole).RoleName</li>
+                            <li class="cross delete-employee" id="@Convert.ToString(emp.Id)"></li>
+                        </ul>
+
+                    </div>
+
+                }
+            }
+        </div>
+
+
+    </div>
+
+    <div id="add-employee" type="button" class="plus"></div>
+
+
+</div>
