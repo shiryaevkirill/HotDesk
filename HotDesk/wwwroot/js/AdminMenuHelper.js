@@ -332,5 +332,150 @@ $(document).ready(function () {
             }
         });
     });
+
+
+
+    $("#workspaces").click(function (e) {
+
+        $.ajax({
+            url: "/Admin/WorkspaceEditor",
+            type: 'Get',
+            success: function (response) {
+                $("#result").html(response)
+            }
+        });
+
+        var active = $(".active-nav");
+        active.removeAttr("class");
+        $(this).attr("class", "active-nav");
+    });
+
+
+    $("#result").on("click", "#add-workspace-view", function (e) {
+        $.ajax({
+            url: "/Admin/AddWorkspace",
+            type: 'Get',
+            success: function (response) {
+                $("#action").html(response)
+
+                $("#add-workspace-form").removeData("validator");
+                $("#add-workspace-form").removeData("unobtrusiveValidation");
+                $.validator.unobtrusive.parse("#add-workspace-form");
+            }
+        });
+    });
+
+    $("#action").on("click", ".add-device-btn", function (e) {
+        var devices = $(".devices-section ul");
+
+        devices.append('<li class="' + this.id + '">' + $(this).text() + ' <span class="cross remove-device" id="' + this.id+'"></span></li>');
+
+        $(this).css("display", "none");
+
+    });
+
+    $("#action").on("click", ".remove-device", function (e) {
+        $("." + this.id).remove();
+        $("li#" + this.id).css("display", "block");
+    });
+
+
+    $("#action").on("click", "#add-workspace", function (e) {
+        if ($("#add-workspace-form").valid()) {
+            var token = $('input:hidden[name="__RequestVerificationToken"]').val();
+
+            var devicesId = "";
+
+            $(".devices-section ul li").each(function () {
+
+                devicesId += ($(this).attr("class") +";");
+
+            });
+
+
+            var model = { StartDate: $("#StartDate").val(), EndDate: $("#EndDate").val(), Description: $("#Description").val(), DevicesId: devicesId };
+
+            $.ajax({
+                url: "/Admin/AddWorkspace",
+                type: 'POST',
+                data: JSON.stringify(model),
+                dataType: "json",
+                contentType: 'application/json',
+                headers:
+                {
+                    "RequestVerificationToken": token
+                },
+                success: function (response) {
+                    if (response == true) {
+                        $('#action').empty();
+
+                        $.ajax({
+                            url: "/Admin/WorkspaceEditor",
+                            type: 'Get',
+                            success: function (response) {
+                                $("#result").html(response)
+                            }
+                        });
+                    }
+                    else
+                        $("#action").html(response.view)
+                }
+            });
+        }
+    });
+
+
+    $("#result").on("click", ".delete-workspace", function (e) {
+        var id = this.id;
+        $.ajax({
+            url: "/Admin/ConfirmDelete",
+            type: 'GET',
+            success: function (response) {
+                $("#action").html(response)
+
+                var agree_btn = $("#action").find(".delete-agree");
+                $(agree_btn).attr('id', id);
+                $(agree_btn).attr('class', "delete-workspace-agree");
+            }
+        });
+    });
+
+
+    $("#action").on("click", ".delete-workspace-agree", function (e) {
+        model = { "Id": this.id, "Table": "Workspace" }
+        $.ajax({
+            url: "/Admin/Delete",
+            type: 'POST',
+            data: JSON.stringify(model),
+            dataType: "json",
+            contentType: 'application/json',
+            success: function (response) {
+                $('#action').empty();
+
+                $.ajax({
+                    url: "/Admin/WorkspaceEditor",
+                    type: 'Get',
+                    success: function (response) {
+                        $("#result").html(response)
+                    }
+                });
+            }
+        });
+    });
+
+
+    $("#result").on("click", ".confirm-application-btn button", function (e) {
+        model = { "OrderId": this.id }
+        alert(this.id);
+        $.ajax({
+            url: "/Admin/ConfirmApplication",
+            type: 'Post',
+            data: JSON.stringify(model),
+            contentType: 'application/json',
+            success: function (response) {
+                $("#result").html(response)
+            }
+        });
+    });
 });
 

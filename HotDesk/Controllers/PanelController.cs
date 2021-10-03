@@ -15,6 +15,7 @@ namespace HotDesk.Controllers
         public IActionResult MainPanel()
         {
             ViewData["name"] = User.FindFirst(x => x.Type == ClaimsIdentity.DefaultNameClaimType).Value;
+
             return View();
         }
     }

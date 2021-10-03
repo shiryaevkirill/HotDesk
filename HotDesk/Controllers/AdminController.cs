@@ -46,18 +46,26 @@ namespace HotDesk.Controllers
         public async Task<JsonResult> AddEmployee([FromBody] AddEmployeeModel model)
         {
            
-            if (ModelState.IsValid)
+            bool result = await serv.AddEmployee(model);
+            if (result)
             {
-                bool result = await serv.AddEmployee(model);
-                if (result)
-                {
-                    return Json(true);
-                }
+                return Json(true);
             }
-            ModelState.AddModelError("", "Некорректные логин и(или) пароль");
+
             return Json(PartialView("AddEmployee", model));
         }
 
+        public async Task<JsonResult> CheckLogin(string login)
+        {
+            var result = await serv.CheckLogin(login);
+            return Json(result);
+        }
+
+        public async Task<JsonResult> CheckRoleName(string RoleName)
+        {
+            var result = await serv.CheckRoleName(RoleName);
+            return Json(result);
+        }
 
         [HttpGet]
         public IActionResult ConfirmDelete()
@@ -74,14 +82,6 @@ namespace HotDesk.Controllers
             int id = Convert.ToInt32(_model.Id);
             var res = await serv.Delete(id, _model.Table);
 
-            //if (_model.Table == "Employee") {
-            //    var model = await serv.GetEmployeesEditorModel();
-            //    return Json(PartialView("EmployeesEditor", model));
-            //}else
-            //{
-            //    var model = await serv.GetRoles();
-            //    return Json(PartialView("RolesEditor", model));
-            //}
             return Json(res);
         }
 
@@ -137,12 +137,47 @@ namespace HotDesk.Controllers
         [Produces("application/json")]
         public async Task<JsonResult> AddDevice([FromBody] Device model)
         {
-            Console.WriteLine("suka1");
             bool result = await serv.AddDevice(model);
-            Console.WriteLine("suka2");
             return Json(result);
 
 
+        }
+
+
+
+        [HttpGet]
+        public async Task<IActionResult> WorkspaceEditor()
+        {
+            var model = await serv.GetWorkspaceEditorModel();
+            return PartialView("WorkspacesEditor",model);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> AddWorkspace()
+        {
+            AddWorkspaceModel model = new AddWorkspaceModel();
+            model.DevicesByType = await serv.GetDevicesByType();
+            return PartialView("AddWorkspace", model);
+        }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Consumes("application/json")]
+        [Produces("application/json")]
+        public async Task<JsonResult> AddWorkspace([FromBody] AddWorkspaceModel model)
+        {
+            bool result = await serv.AddWorkspace(model);
+            return Json(result);
+        }
+
+        [HttpPost]
+        [Consumes("application/json")]
+        public async Task<IActionResult> ConfirmApplication([FromBody] ConfirmApplicationModel model)
+        {
+            bool result = await serv.ConfirmApplication(model);
+            var _model = await serv.GetWorkspaceEditorModel();
+            return PartialView("WorkspacesEditor", _model);
         }
     }
 }

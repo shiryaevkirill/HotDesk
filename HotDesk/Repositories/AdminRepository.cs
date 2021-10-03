@@ -1,11 +1,13 @@
 ﻿using HotDesk.Data;
 using HotDesk.Models.AdminModels;
 using HotDesk.Models.DbModels;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+
 
 namespace HotDesk.Repositories
 {
@@ -44,6 +46,24 @@ namespace HotDesk.Repositories
             return role;
         }
 
+        public async Task<Workplace> GetWorkspaceById(int id)
+        {
+            var workspace = await context.Workplace.FirstOrDefaultAsync(p => p.Id == id);
+            return workspace;
+        }
+
+        public async Task<Reservation> GetReservationById(int id)
+        {
+            var reservation = await context.Reservation.FirstOrDefaultAsync(p => p.Id == id);
+            return reservation;
+        }
+
+        public async Task<Status> GetStatusById(int id)
+        {
+            var status = await context.Status.FirstOrDefaultAsync(p => p.Id == id);
+            return status;
+        }
+
         public async Task<List<Role>> GetRoles(){
             var roles = await context.Role.Where(r => r.RoleName != "Admin").ToListAsync();
             return roles;
@@ -55,10 +75,22 @@ namespace HotDesk.Repositories
             return devices;
         }
 
-        public async Task<Employee> CheckCoincidence(AddEmployeeModel model)
+        public async Task<List<Workplace>> GetWorkspaces()
         {
-            Employee employee = await context.Employee.FirstOrDefaultAsync(u => u.Login == model.Login);
+            var workspaces = await context.Workplace.ToListAsync();
+            return workspaces;
+        }
+        public async Task<Employee> CheckLogin(string login)
+        {
+            Employee employee = await context.Employee.FirstOrDefaultAsync(u => u.Login == login);
             return employee;
+        }
+
+        
+        public async Task<Role> CheckRoleName(string RoleName)
+        {
+            var role = await context.Role.FirstOrDefaultAsync(u => u.RoleName == RoleName);
+            return role;
         }
 
         public async Task<Role> FindRole(AddEmployeeModel model)
@@ -95,6 +127,21 @@ namespace HotDesk.Repositories
             return true;
         }
 
+        public async Task<bool> DeleteWorkspace(Workplace workplace)
+        {
+            context.Workplace.Remove(workplace);
+            await context.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> DeleteReservation(Reservation reservation)
+        {
+            context.Reservation.Remove(reservation);
+            await context.SaveChangesAsync();
+            return true;
+        }
+
+
         public async Task<bool> AddRole(Role role)
         {
             context.Role.Add(role);
@@ -106,6 +153,35 @@ namespace HotDesk.Repositories
         public async Task<bool> AddDevice(Device device)
         {
             context.Device.Add(device);
+            await context.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> AddWorkspace(Workplace workplace)
+        {
+            context.Workplace.Add(workplace);
+            await context.SaveChangesAsync();
+            return true;
+        }
+
+
+        public async Task<int> AddReservation(Reservation reservation)
+        {
+            context.Reservation.Add(reservation);
+            await context.SaveChangesAsync();
+            return reservation.Id;
+        }
+
+        public async Task<bool> UpdateWorkspace(Workplace workplace)
+        {
+            context.Workplace.Update(workplace);
+            await context.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> UpdateReservation(Reservation reservation)
+        {
+            context.Reservation.Update(reservation);
             await context.SaveChangesAsync();
             return true;
         }

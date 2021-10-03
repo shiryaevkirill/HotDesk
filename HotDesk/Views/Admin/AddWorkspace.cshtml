@@ -1,0 +1,80 @@
+﻿@model HotDesk.Models.AdminModels.AddWorkspaceModel
+
+<div class="action-overlay"></div>
+<div class="login-section workspace-edit">
+    <span class="cross close-cross" type="button"></span>
+    <form method="post" id="add-workspace-form">
+        @Html.AntiForgeryToken()
+
+
+        <div class="workspace-container">
+            <div class="workspace-section workspace-date">
+                <div class="workspace-header">
+                    @Html.LabelFor(m => m.StartDate)
+                </div>
+                <div>
+                    @Html.EditorFor(m => m.StartDate, new { @Value = "-" })
+                    @Html.ValidationMessageFor(m => m.StartDate)
+                </div>
+                <div class="workspace-header">
+                    @Html.LabelFor(m => m.EndDate)
+                </div>
+                <div>
+                    @Html.EditorFor(m => m.EndDate)
+                    @Html.ValidationMessageFor(m => m.EndDate)
+                </div>
+            </div>
+            <div class="workspace-section workspace-description">
+                <div class="workspace-header">
+                    @Html.LabelFor(m => m.Description)
+                </div>
+                <div>
+                    <textarea asp-for="Description" id="Description"></textarea>
+                    @Html.ValidationMessageFor(m => m.Description)
+                </div>
+            </div>
+            <div class="workspace-section workspace-device">
+                <div class="workspace-header">Devices</div>
+                <div class="devices-section">
+                    <ul></ul>
+                </div>
+                <div class="add-device">
+                    +
+                    <ul class="submenu">
+
+                        @{
+                            foreach (var type in Model.DevicesByType)
+                            {
+
+                                <li>
+                                    <a>@Html.DisplayName(type.Key)</a>
+
+                                    <ul class="submenu">
+                                        @foreach (var device in type)
+                                        {
+
+                                            <li id="@device.Id" class="@type.Key add-device-btn"><a>@Html.DisplayName(device.DeviceName)</a></li>
+                                        }
+                                    </ul>
+
+                                </li>
+
+                            }
+
+
+                        }
+
+
+
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+
+        <button id="add-workspace" type="button">Add</button>
+
+        
+
+    </form>
+</div>

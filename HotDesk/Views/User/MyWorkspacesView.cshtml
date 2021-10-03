@@ -1,0 +1,52 @@
+﻿@using HotDesk.Models.UserModel
+@model List<MyWorkspacesViewModel>
+
+<div class="user-workspace-view">
+    <div class="data-container fixed-container">
+
+        @{
+
+            foreach (var workspace in Model)
+            {
+                <div class="workspace-container glass-effect">
+
+                    <div class="workspace-section workspace-date">
+                        <div class="workspace-header">Start date</div>
+                        <div>
+                            <p>@workspace.StartDate</p>
+                        </div>
+                        <div class="workspace-header">End date</div>
+                        <div>
+                            <p>@workspace.EndDate</p>
+                        </div>
+                    </div>
+                    <div class="workspace-section workspace-description">
+                        <div class="workspace-header">Description</div>
+                        <div>
+                            <p>@workspace.Description</p>
+                        </div>
+                    </div>
+                    <div class="workspace-section workspace-device">
+                        <div class="workspace-header">Devices</div>
+                        <div>
+                            <ul>
+                                @foreach (var device in workspace.Devices)
+                                {
+                                    <li>@device.DeviceName</li>
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="workspace-section">
+                        <div class="workspace-header">Status</div>
+                        <div>
+                            <p>@workspace.Status</p>
+                        </div>
+                    </div>
+                </div>
+
+            }
+        }
+
+    </div>
+</div>

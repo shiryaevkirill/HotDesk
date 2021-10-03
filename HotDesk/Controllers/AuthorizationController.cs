@@ -120,11 +120,12 @@ namespace HotDesk.Controllers
 
         private async Task Authenticate(Employee employee, string NameRole)
         {
-            
+
             var claims = new List<Claim>
             {
                 new Claim(ClaimsIdentity.DefaultNameClaimType, employee.Name+" "+employee.Surname),
-                new Claim(ClaimsIdentity.DefaultRoleClaimType, NameRole)
+                new Claim(ClaimsIdentity.DefaultRoleClaimType, NameRole),
+                new Claim("Id", value: Convert.ToString(employee.Id))
             };
             
             ClaimsIdentity id = new ClaimsIdentity(claims, "ApplicationCookie", ClaimsIdentity.DefaultNameClaimType,

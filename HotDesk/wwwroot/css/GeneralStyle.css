@@ -97,7 +97,7 @@ button:hover{
 
 .glass-effect{
     box-shadow: 0 0 1rem 0 rgba(41, 39, 39, 0.2);
-    border-radius: 3px;
+    border-radius: 15px;
     position: relative;
     z-index: 1;
     background: inherit;

@@ -1,4 +1,5 @@
 using HotDesk.Data;
+using HotDesk.Models.DbModels;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
@@ -34,6 +35,13 @@ namespace HotDesk
 
             services.AddDbContext<HotDeskContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("HotDeskContext")));
+
+            //services.AddIdentity<IdentityUser, IdentityRole>(options =>
+            //{
+            //    options.User.RequireUniqueEmail = false;
+            //})
+            //.AddEntityFrameworkStores<HotDeskContext>()
+            //.AddDefaultTokenProviders();
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options =>

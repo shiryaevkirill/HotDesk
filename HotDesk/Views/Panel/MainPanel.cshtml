@@ -19,6 +19,10 @@
         {
             <script type="text/javascript" src="@Url.Content("~/js/AdminMenuHelper.js")"></script>
         }
+        else if (User.IsInRole("User"))
+        {
+            <script type="text/javascript" src="@Url.Content("~/js/UserMenuHelper.js")"></script>
+        }
     }
 </head>
 <body>
@@ -51,6 +55,7 @@
 
     <div id="result"></div>
     <div id="action"></div>
+    <div id="SearchView"></div>
 
 
 </body>

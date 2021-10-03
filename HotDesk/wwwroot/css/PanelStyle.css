@@ -6,6 +6,7 @@
 header {
     width: 100%;
     height: 50px;
+    border-radius: 0 !important;
 }
 
 .logo{
@@ -229,4 +230,176 @@ header {
 
 .active-nav:hover{
     background-color: #EB8E2F !important;
+}
+
+
+.workspace-section {
+    float: left;
+    padding: 0 15px;
+    word-break: break-all;
+    text-align: center;
+}
+
+.workspace-container{
+    padding: 35px;
+    margin: 20px 0;
+}
+
+.workspace-header{
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.workspace-date{
+    width: 150px;
+}
+
+.workspace-description{
+    width: 200px;
+    text-align: unset;
+}
+
+.workspace-device{
+    width: 200px;
+}
+
+.workspace-employee{
+    width: 150px;
+}
+
+.workspace-status{
+    width: 100px;
+}
+
+.delete-workspace{
+    position: absolute;
+    top: 10px;
+    right: 40px;
+}
+
+
+.workspace-edit{
+    width: max-content;
+}
+
+.workspace-edit input{
+    margin-top: 10px;
+}
+
+.workspace-edit textarea{
+    height: 130px !important;
+    width: 100% !important;
+    background-color: #107b9e;
+    color: #fff;
+    font-size: 15px;
+}
+
+.workspace-edit button{
+    width: 20%;
+    margin: 30px auto 0 auto;
+    margin-left: 40%;
+}
+
+.devices-section {
+    height: 130px;
+    width: 100%;
+    background-color: #107b9e;
+    color: #fff;
+}
+
+.add-device {
+    width: inherit;
+    height: 20px;
+    background: #EB8E2F;
+    display: block;
+    text-align: center;
+    color: #fff;
+}
+
+.add-device:hover{
+    background: #9E5000;
+}
+
+
+
+
+.submenu {
+  position: absolute;
+  z-index: 40;
+  min-width: 200px;
+  visibility: hidden;
+  opacity: 0; 
+  transform-origin: 0% 0%;
+  transform: rotateX(-90deg);
+  transition: .3s linear;  
+}
+.submenu li {position: relative;}
+.submenu li a {
+  color: #fff;
+  padding: 10px 20px;
+  font-size: 16px;
+}
+.submenu .submenu {
+  position: absolute;
+  left: 100%;
+  top: -1px;
+  transition: .3s linear;
+}
+.add-device:hover > .submenu, .add-device li:hover > .submenu {
+    transform: rotateX(0deg);
+    visibility: visible;
+    opacity: 1;
+}
+
+.add-device li {
+    background-color: #107b9e;
+    height: 30px;
+    padding-top: 7px;
+}
+
+.add-device li:hover{
+    background-color: #eb8e2f;
+}
+
+.remove-device{
+    margin-top: 30px;
+    font-size: 15px;
+}
+
+.data-container.fixed-container{
+    border: none;
+    max-height: 70%;
+}
+
+.user-workspace-view{
+    width: max-content;
+    float: left;
+    margin-left: 150px;
+}
+
+#SearchView{
+    float: left;
+    width: max-content;
+    margin-top: 50px;
+    margin-left: 100px;
+}
+
+.search-view {
+    padding: 30px;
+}
+
+.search-view li, .search-view li a{
+    max-width: 140px;
+}
+
+.search-btn{
+    width: 100px;
+    margin: 20px 0 0 20px;
+    height: 40px;
+}
+
+.confirm-application-btn{
+    position: absolute;
+    right: 15px;
+    bottom: 15px;
 }

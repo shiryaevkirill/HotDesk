@@ -1,0 +1,47 @@
+﻿
+@model HotDesk.Models.UserModel.SearchModel
+
+<div class="search-view">
+    <div>
+        <div class="workspace-header">
+            @Html.LabelFor(m => m.StartDate)
+        </div>
+        <div>
+            @Html.EditorFor(m => m.StartDate, new { @Value = "-" })
+            @Html.ValidationMessageFor(m => m.StartDate)
+        </div>
+    </div>
+
+    <div class="workspace-header">Devices</div>
+    <div class="devices-section">
+        <ul></ul>
+    </div>
+    <div class="add-device">
+        +
+        <ul class="submenu">
+
+            @{
+                int i = 0;
+                foreach (var type in Model.DevicesByType)
+                {
+                    
+                    <li class="add-device-btn" id="@type.Key">
+                        <a>@Html.DisplayName(type.Key)</a>
+
+                    </li>
+                    i++;
+                }
+
+
+            }
+
+
+
+        </ul>
+    </div>
+
+    <div>
+        <button class="search-btn" type="button">Search</button>
+    </div>
+
+</div>
