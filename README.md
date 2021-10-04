@@ -13,4 +13,15 @@ On the right, you can select the required start date and devices. then press the
 ![image](https://user-images.githubusercontent.com/65130365/135785765-6f13c70a-4a33-4d7f-b752-f1dce430d089.png)
 In your places, you can also see the status of the application.
 ![image](https://user-images.githubusercontent.com/65130365/135785981-6f81f46d-deb1-4dab-b9d1-df97580fec4d.png)
-#Admin UI
+# Admin UI
+![image](https://user-images.githubusercontent.com/65130365/135789149-39ddf245-8c6f-496c-9c29-ddf6e47b8dd5.png)
+On the left you can see a menu for adding and removing worplaces, workers, roles and devices
+![image](https://user-images.githubusercontent.com/65130365/135789063-7dbd5747-465b-40b5-acf2-3dd901defe7b.png)
+Сlick on the plus to add the selected item
+![image](https://user-images.githubusercontent.com/65130365/135789188-589ca4a2-697a-4a1e-bd8c-a0ff0687c829.png)
+You will see a window for entering the required data
+![image](https://user-images.githubusercontent.com/65130365/135789242-cf3e6a08-fe67-4848-8f19-b508cd278cf6.png)
+Click on the cross to remove the selected item. Click on the confirm button to confirm the employee's application for this workplace
+![image](https://user-images.githubusercontent.com/65130365/135789375-e2a45a62-ea97-4b6d-8e8c-ea458c501eca.png)
+
+
