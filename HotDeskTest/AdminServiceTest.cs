@@ -86,7 +86,7 @@ namespace HotDeskTest
         {
             Device item = new Device { Id = 1 };
 
-            repos.Setup(x => x.GetById<Device>(1)).Returns(Task.FromResult(item));
+            repos.Setup(x => x.GetById<Device>(1)).Returns(item);
             repos.Setup(x => x.Remove(item));
             // Act
             serv.Delete<Device>(1);

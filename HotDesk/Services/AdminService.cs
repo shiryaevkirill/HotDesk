@@ -41,15 +41,13 @@ namespace HotDesk.Services
             repos.SaveChanges();
         }
 
-        public async void Delete<T>(int id) where T : class
+        public void Delete<T>(int id) where T : class
         {
-            T item = await repos.GetById<T>(id);
+            T item = repos.GetById<T>(id);
 
             repos.Remove(item);
-            repos.SaveChanges();
         }
 
-//___________________________________________________________________________________________
 
         public async Task<EmployeesEditor> GetEmployeesEditorModel()
         {
@@ -75,20 +73,6 @@ namespace HotDesk.Services
         }
 
 
-        //public async Task<List<Role>> GetRoles()
-        //{
-        //    List<Role> Roles = await repos.GetRoles();
- 
-        //    return Roles;
-        //}
-
-        //public async Task<List<Device>> GetDevices()
-        //{
-        //    List<Device> Device = await repos.GetDevices();
-
-        //    return Device;
-        //}
-
         public async Task<List<WorkspaceEditorModel>> GetWorkspaceEditorModel()
         {
             var wp = await repos.GetAll<Workplace>();
@@ -107,12 +91,12 @@ namespace HotDesk.Services
 
                 if (workspace.OrderId != 0)
                 {
-                    Reservation reserv = await repos.GetById<Reservation>(workspace.OrderId);
+                    Reservation reserv = repos.GetById<Reservation>(workspace.OrderId);
 
-                    var employee = await repos.GetById<Employee>(reserv.IdWorker);
+                    var employee = repos.GetById<Employee>(reserv.IdWorker);
                     model.Employee = employee.Name + " " + employee.Surname;
 
-                    var status = await repos.GetById<Status>(reserv.IdStatus);
+                    var status = repos.GetById<Status>(reserv.IdStatus);
                     model.Status = status.StatusName;
                 }
                 if (workspace.DevicesId.Length > 1)
@@ -123,7 +107,7 @@ namespace HotDesk.Services
 
                     foreach (var id in ids)
                     {
-                        var device = await repos.GetById<Device>(Convert.ToInt32(id));
+                        var device = repos.GetById<Device>(Convert.ToInt32(id));
                         model.Devices.Add(device);
                     }
                 }
@@ -148,6 +132,7 @@ namespace HotDesk.Services
             if (userRole != null)
                 employee.IdRole = userRole.Id;
             repos.Add(employee);
+            repos.SaveChanges();
         }
 
 
@@ -161,22 +146,6 @@ namespace HotDesk.Services
             else return false;
         }
 
-        //public async Task<bool> CheckLogin(string login)
-        //{
-        //    var employee = await repos.CheckLogin(login);
-
-        //    if (employee == null) return true;
-        //    else return false;
-        //}
-
-        //public async Task<bool> CheckRoleName(string name)
-        //{
-        //    var role = await repos.CheckRoleName(name);
-
-        //    if (role == null) return true;
-        //    else return false;
-        //}
-
         public void AddWorkspace(AddWorkspaceModel model)
         {
 
@@ -188,76 +157,11 @@ namespace HotDesk.Services
             workspace.DevicesId = model.DevicesId;
 
             repos.Add(workspace);
-
+            repos.SaveChanges();
         }
 
 
-        //public async Task<bool> AddRole(Role model)
-        //{
-
-        //    Role role = new Role {RoleName = model.RoleName };
-        //    bool res = await repos.AddRole(role);
-        //    return res;
-        //}
-
-        //public async Task<bool> AddDevice(Device model)
-        //{
-
-        //    Device device = new Device { DeviceName = model.DeviceName, DeviceType = model.DeviceType};
-        //    bool res = await repos.AddDevice(device);
-        //    return res;
-        //}
-
-        //public async Task<bool> Delete(int id, string Table)
-        //{
-
-        //    if (Table == "Employee")
-        //    {
-        //        var item = await repos.GetEmployeeById(id);
-        //        if (item != null)
-        //        {
-        //            var res = await repos.DeleteEmployee(item);
-        //            return res;
-        //        }
-        //    }
-        //    else if (Table == "Role")
-        //    {
-        //        var item = await repos.GetRoleById(id);
-        //        if (item != null)
-        //        {
-        //            var res = await repos.DeleteRole(item);
-        //            return res;
-        //        }
-        //    }else if (Table == "Device")
-        //    {
-        //        var item = await repos.GetDeviceById(id);
-        //        if (item != null)
-        //        {
-        //            var res = await repos.DeleteDevice(item);
-        //            return res;
-        //        }
-        //    }
-        //    else if (Table == "Workspace")
-        //    {
-        //        var item = await repos.GetWorkspaceById(id);
-        //        if (item != null)
-        //        {
-        //            if (item.OrderId != 0)
-        //            {
-        //                var reservation = await repos.GetReservationById(item.OrderId);
-        //                await repos.DeleteReservation(reservation);
-        //            }
-
-        //                var res = await repos.DeleteWorkspace(item);
-
-                    
-
-        //            return res;
-        //        }
-        //    }
-
-        //    return false;
-        //}
+   
 
         public async Task<ILookup<String, Device>> GetDevicesByType()
         {
@@ -270,12 +174,11 @@ namespace HotDesk.Services
 
         public async Task<bool> ConfirmApplication(ConfirmApplicationModel model)
         {
-            Reservation reserv = await repos.GetById<Reservation>(Convert.ToInt32(model.OrderId));
+            Reservation reserv = repos.GetById<Reservation>(Convert.ToInt32(model.OrderId));
 
             reserv.IdStatus = 2;
-
-            repos.Update(reserv);
-
+            await repos.Update(reserv);
+            await repos.SaveChanges();
             return true;
         }
     }

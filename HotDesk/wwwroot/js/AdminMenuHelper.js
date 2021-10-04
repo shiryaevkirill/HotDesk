@@ -466,7 +466,6 @@ $(document).ready(function () {
 
     $("#result").on("click", ".confirm-application-btn button", function (e) {
         model = { "OrderId": this.id }
-        alert(this.id);
         $.ajax({
             url: "/Admin/ConfirmApplication",
             type: 'Post',

@@ -46,7 +46,7 @@ namespace HotDesk.Controllers
         public JsonResult AddEmployee([FromBody] AddEmployeeModel model)
         {
 
-            serv.Add(model);
+            serv.AddEmployee(model);
 
 
 
@@ -82,7 +82,9 @@ namespace HotDesk.Controllers
 
             if (Table == "Employee")
             {
+                Console.WriteLine("zzzzzzzzzzzzzzzzzz");
                 serv.Delete<Employee>(Convert.ToInt32(_model.Id));
+
             }
             else if (Table == "Role")
             {
@@ -180,7 +182,7 @@ namespace HotDesk.Controllers
         [Produces("application/json")]
         public JsonResult AddWorkspace([FromBody] AddWorkspaceModel model)
         {
-            serv.Add(model);
+            serv.AddWorkspace(model);
             return Json(true);
         }
 

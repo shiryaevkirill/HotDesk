@@ -44,7 +44,7 @@ namespace HotDesk.Services
 
                     foreach (var id in ids)
                     {
-                        var device = await repos.GetById<Device>(Convert.ToInt32(id));
+                        var device = repos.GetById<Device>(Convert.ToInt32(id));
                         model.Devices.Add(device);
                     }
                 }
@@ -63,10 +63,11 @@ namespace HotDesk.Services
 
             var reservationId = await repos.AddReservation(reserv);
 
-            Workplace workplace = await repos.GetById<Workplace>(model.WorkspaceId);
+            Workplace workplace = repos.GetById<Workplace>(model.WorkspaceId);
             workplace.OrderId = reservationId;
 
             repos.Update(workplace);
+            repos.SaveChanges();
             return true;
         }
 
@@ -114,7 +115,7 @@ namespace HotDesk.Services
 
                     foreach (var id in ids)
                     {
-                        var device = await repos.GetById<Device>(Convert.ToInt32(id));
+                        var device = repos.GetById<Device>(Convert.ToInt32(id));
                         model.Devices.Add(device);
                     }
                 }
@@ -155,7 +156,7 @@ namespace HotDesk.Services
             foreach (var workspace in workspaces)
             {
                 if (workspace.OrderId == 0) continue;
-                Reservation reserv = await repos.GetById<Reservation>(workspace.OrderId);
+                Reservation reserv = repos.GetById<Reservation>(workspace.OrderId);
 
                 if (reserv.IdWorker != userId) continue;
 
@@ -165,7 +166,7 @@ namespace HotDesk.Services
                 model.EndDate = workspace.EndDate;
                 model.Description = workspace.Description;
                 model.Devices = new List<Device>();
-                var status = await repos.GetById<Status>(reserv.IdStatus);
+                var status = repos.GetById<Status>(reserv.IdStatus);
                 model.Status = status.StatusName;
 
                 if (workspace.DevicesId.Length > 1)
@@ -176,7 +177,7 @@ namespace HotDesk.Services
 
                     foreach (var id in ids)
                     {
-                        var device = await repos.GetById<Device>(Convert.ToInt32(id));
+                        var device = repos.GetById<Device>(Convert.ToInt32(id));
                         model.Devices.Add(device);
                     }
                 }

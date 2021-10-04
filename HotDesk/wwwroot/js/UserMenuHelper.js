@@ -101,8 +101,9 @@ $(document).ready(function () {
             url: "/User/MyWorkspacesView",
             type: 'Get',
             success: function (response) {
-                $("#result").html(response)
+                $("#result").html(response);
 
+                $("#SearchView").empty();
             }
         });
 
