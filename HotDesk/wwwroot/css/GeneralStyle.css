@@ -63,7 +63,7 @@ body {
     color: #303030;
     font-family: 'Roboto', sans-serif;
     backdrop-filter: blur(5px);
-    background-image: url(fon.jpg);
+    background-image: url(../img/fon.jpg);
     background-size: cover;
 }
 

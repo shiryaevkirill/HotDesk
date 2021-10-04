@@ -9,18 +9,19 @@ using System.Threading.Tasks;
 
 namespace HotDesk.Services
 {
-    public class UserService
+    public class UserService : IUserService
     {
-        private AdminRepository repos;
+        private readonly IRepository repos;
 
-        public UserService(HotDeskContext context)
+        public UserService(IRepository _repos)
         {
-            repos = new AdminRepository(context);
+            repos = _repos;
         }
 
         public async Task<List<WorkspacesViewModel>> GetWorkspaceViewModel()
         {
-            List<Workplace> workspaces = await repos.GetWorkspaces();
+            var w = await repos.GetAll<Workplace>();
+            List <Workplace> workspaces = w.ToList();
 
             List<WorkspacesViewModel> result = new List<WorkspacesViewModel>();
 
@@ -43,7 +44,7 @@ namespace HotDesk.Services
 
                     foreach (var id in ids)
                     {
-                        var device = await repos.GetDeviceById(Convert.ToInt32(id));
+                        var device = await repos.GetById<Device>(Convert.ToInt32(id));
                         model.Devices.Add(device);
                     }
                 }
@@ -54,7 +55,7 @@ namespace HotDesk.Services
         }
 
 
-        public async Task<bool> Apply(ApplyModel model,int userId)
+        public async Task<bool> Apply(ApplyModel model, int userId)
         {
             Reservation reserv = new Reservation();
             reserv.IdWorker = userId;
@@ -62,16 +63,17 @@ namespace HotDesk.Services
 
             var reservationId = await repos.AddReservation(reserv);
 
-            Workplace workplace = await repos.GetWorkspaceById(model.WorkspaceId);
+            Workplace workplace = await repos.GetById<Workplace>(model.WorkspaceId);
             workplace.OrderId = reservationId;
 
-            await repos.UpdateWorkspace(workplace);
+            repos.Update(workplace);
             return true;
         }
 
         public async Task<ILookup<String, Device>> GetDevicesByType()
         {
-            List<Device> devices = await repos.GetDevices();
+            var d = await repos.GetAll<Device>();
+            List<Device> devices = d.ToList();
 
             ILookup<String, Device> devicesByType = devices.ToLookup(d => d.DeviceType);
             return devicesByType;
@@ -80,12 +82,14 @@ namespace HotDesk.Services
 
         public async Task<List<WorkspacesViewModel>> GetWorkspaceSearch(SearchModel search)
         {
-            List<Workplace> workspaces = await repos.GetWorkspaces();
+            var w = await repos.GetAll<Workplace>();
+            List<Workplace> workspaces = w.ToList();
 
             List<WorkspacesViewModel> result = new List<WorkspacesViewModel>();
 
             string[] search_types = null;
-            if (search.DevicesType != null && search.DevicesType != "") { 
+            if (search.DevicesType != null && search.DevicesType != "")
+            {
                 string searchType = search.DevicesType;
                 searchType = searchType.Remove(searchType.Length - 1);
                 search_types = searchType.Split(';');
@@ -110,13 +114,13 @@ namespace HotDesk.Services
 
                     foreach (var id in ids)
                     {
-                        var device = await repos.GetDeviceById(Convert.ToInt32(id));
+                        var device = await repos.GetById<Device>(Convert.ToInt32(id));
                         model.Devices.Add(device);
                     }
                 }
 
-                if (search.StartDate!=""&&model.StartDate != search.StartDate) continue;
-                
+                if (search.StartDate != "" && model.StartDate != search.StartDate) continue;
+
                 bool check_one;
                 bool check_all = true;
                 if (search_types != null)
@@ -140,17 +144,18 @@ namespace HotDesk.Services
             return result;
         }
 
-        
+
         public async Task<List<MyWorkspacesViewModel>> GetMyWorkspaceViewModel(int userId)
         {
-            List<Workplace> workspaces = await repos.GetWorkspaces();
+            var w = await repos.GetAll<Workplace>();
+            List<Workplace> workspaces = w.ToList();
 
             List<MyWorkspacesViewModel> result = new List<MyWorkspacesViewModel>();
 
             foreach (var workspace in workspaces)
             {
                 if (workspace.OrderId == 0) continue;
-                Reservation reserv = await repos.GetReservationById(workspace.OrderId);
+                Reservation reserv = await repos.GetById<Reservation>(workspace.OrderId);
 
                 if (reserv.IdWorker != userId) continue;
 
@@ -160,7 +165,7 @@ namespace HotDesk.Services
                 model.EndDate = workspace.EndDate;
                 model.Description = workspace.Description;
                 model.Devices = new List<Device>();
-                var status = await repos.GetStatusById(reserv.IdStatus);
+                var status = await repos.GetById<Status>(reserv.IdStatus);
                 model.Status = status.StatusName;
 
                 if (workspace.DevicesId.Length > 1)
@@ -171,7 +176,7 @@ namespace HotDesk.Services
 
                     foreach (var id in ids)
                     {
-                        var device = await repos.GetDeviceById(Convert.ToInt32(id));
+                        var device = await repos.GetById<Device>(Convert.ToInt32(id));
                         model.Devices.Add(device);
                     }
                 }

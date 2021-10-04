@@ -9,28 +9,63 @@ using System.Threading.Tasks;
 
 namespace HotDesk.Services
 {
-    public class AdminService
+    public class AdminService : IAdminService
     {
-        private AdminRepository repos;
-        HotDeskContext context;
+        private readonly IRepository repos;
 
-        public AdminService(HotDeskContext _context)
+        public AdminService(IRepository _repos)
         {
-            repos = new AdminRepository(_context);
-            context = _context;
+            repos = _repos;
         }
+
+
+        public T Get<T>(Func<T, bool> predicate) where T : class
+        {
+            return repos.Get(predicate);
+        }
+
+        public async Task<List<T>> GetAll<T>() where T : class
+        {
+            var result = await repos.GetAll<T>();
+            return result.ToList();
+        }
+
+        public List<T> GetAll<T>(Func<T, bool> predicate) where T : class
+        {
+            return repos.GetAll<T>(predicate).ToList();
+        }
+
+        public void Add<T>(T item) where T : class
+        {
+            repos.Add(item);
+            repos.SaveChanges();
+        }
+
+        public async void Delete<T>(int id) where T : class
+        {
+            T item = await repos.GetById<T>(id);
+
+            repos.Remove(item);
+            repos.SaveChanges();
+        }
+
+//___________________________________________________________________________________________
 
         public async Task<EmployeesEditor> GetEmployeesEditorModel()
         {
             var model = new EmployeesEditor();
-            model.Employees = await repos.GetUsers();
-            model.Roles = await repos.GetRoles();
+            var adminId = repos.Get<Role>(r => r.RoleName == "Admin");
+            var users = repos.GetAll<Employee>(e => e.IdRole != adminId.Id);
+            model.Employees = users.ToList();
+            var roles = await repos.GetAll<Role>();
+            model.Roles = roles.ToList();
             return model;
         }
 
         public async Task<string[]> GetRoleName()
         {
-            List<Role> Roles = await repos.GetRoles();
+            var roles = await repos.GetAll<Role>();
+            List<Role> Roles = roles.ToList();
             List<string> RoleName = new List<string>();
             foreach (Role role in Roles)
             {
@@ -40,24 +75,24 @@ namespace HotDesk.Services
         }
 
 
-        public async Task<List<Role>> GetRoles()
-        {
-            List<Role> Roles = await repos.GetRoles();
+        //public async Task<List<Role>> GetRoles()
+        //{
+        //    List<Role> Roles = await repos.GetRoles();
  
-            return Roles;
-        }
+        //    return Roles;
+        //}
 
-        public async Task<List<Device>> GetDevices()
-        {
-            List<Device> Device = await repos.GetDevices();
+        //public async Task<List<Device>> GetDevices()
+        //{
+        //    List<Device> Device = await repos.GetDevices();
 
-            return Device;
-        }
+        //    return Device;
+        //}
 
         public async Task<List<WorkspaceEditorModel>> GetWorkspaceEditorModel()
         {
-            List<Workplace> workspaces = await repos.GetWorkspaces();
-
+            var wp = await repos.GetAll<Workplace>();
+            List<Workplace> workspaces = wp.ToList();
             List<WorkspaceEditorModel> result = new List<WorkspaceEditorModel>();
 
             foreach (var workspace in workspaces)
@@ -72,12 +107,12 @@ namespace HotDesk.Services
 
                 if (workspace.OrderId != 0)
                 {
-                    Reservation reserv = await repos.GetReservationById(workspace.OrderId);
+                    Reservation reserv = await repos.GetById<Reservation>(workspace.OrderId);
 
-                    var employee = await repos.GetEmployeeById(reserv.IdWorker);
+                    var employee = await repos.GetById<Employee>(reserv.IdWorker);
                     model.Employee = employee.Name + " " + employee.Surname;
 
-                    var status = await repos.GetStatusById(reserv.IdStatus);
+                    var status = await repos.GetById<Status>(reserv.IdStatus);
                     model.Status = status.StatusName;
                 }
                 if (workspace.DevicesId.Length > 1)
@@ -88,7 +123,7 @@ namespace HotDesk.Services
 
                     foreach (var id in ids)
                     {
-                        var device = await repos.GetDeviceById(Convert.ToInt32(id));
+                        var device = await repos.GetById<Device>(Convert.ToInt32(id));
                         model.Devices.Add(device);
                     }
                 }
@@ -99,10 +134,8 @@ namespace HotDesk.Services
         }
 
 
-        public async Task<bool> AddEmployee(AddEmployeeModel model)
+        public void AddEmployee(AddEmployeeModel model)
         {
-
-
             Employee employee = new Employee
             {
                 Name = model.Name,
@@ -111,32 +144,41 @@ namespace HotDesk.Services
                 Password = model.Password
             };
 
-            Role userRole = await repos.FindRole(model);
+            Role userRole = repos.Get<Role>(r => r.RoleName == model.Role);
             if (userRole != null)
                 employee.IdRole = userRole.Id;
-            bool res = await repos.AddEmployee(employee);
-            return res;
+            repos.Add(employee);
         }
 
-        public async Task<bool> CheckLogin(string login)
-        {
-            var employee = await repos.CheckLogin(login);
 
-            if (employee == null) return true;
+        
+
+        public bool Check<T>(Func<T, bool> predicate) where T:class
+        {
+            var result = repos.Check<T>(predicate);
+
+            if (result == null) return true;
             else return false;
         }
 
-        public async Task<bool> CheckRoleName(string name)
+        //public async Task<bool> CheckLogin(string login)
+        //{
+        //    var employee = await repos.CheckLogin(login);
+
+        //    if (employee == null) return true;
+        //    else return false;
+        //}
+
+        //public async Task<bool> CheckRoleName(string name)
+        //{
+        //    var role = await repos.CheckRoleName(name);
+
+        //    if (role == null) return true;
+        //    else return false;
+        //}
+
+        public void AddWorkspace(AddWorkspaceModel model)
         {
-            var role = await repos.CheckRoleName(name);
-
-            if (role == null) return true;
-            else return false;
-        }
-
-        public async Task<bool> AddWorkspace(AddWorkspaceModel model)
-        {
-
 
             Workplace workspace = new Workplace();
 
@@ -145,82 +187,82 @@ namespace HotDesk.Services
             workspace.Description = model.Description;
             workspace.DevicesId = model.DevicesId;
 
-            bool res = await repos.AddWorkspace(workspace);
+            repos.Add(workspace);
 
-            return true;
         }
 
 
-        public async Task<bool> AddRole(Role model)
-        {
+        //public async Task<bool> AddRole(Role model)
+        //{
 
-            Role role = new Role {RoleName = model.RoleName };
-            bool res = await repos.AddRole(role);
-            return res;
-        }
+        //    Role role = new Role {RoleName = model.RoleName };
+        //    bool res = await repos.AddRole(role);
+        //    return res;
+        //}
 
-        public async Task<bool> AddDevice(Device model)
-        {
+        //public async Task<bool> AddDevice(Device model)
+        //{
 
-            Device device = new Device { DeviceName = model.DeviceName, DeviceType = model.DeviceType};
-            bool res = await repos.AddDevice(device);
-            return res;
-        }
+        //    Device device = new Device { DeviceName = model.DeviceName, DeviceType = model.DeviceType};
+        //    bool res = await repos.AddDevice(device);
+        //    return res;
+        //}
 
-        public async Task<bool> Delete(int id, string Table)
-        {
+        //public async Task<bool> Delete(int id, string Table)
+        //{
 
-            if (Table == "Employee")
-            {
-                var item = await repos.GetEmployeeById(id);
-                if (item != null)
-                {
-                    var res = await repos.DeleteEmployee(item);
-                    return res;
-                }
-            }
-            else if (Table == "Role")
-            {
-                var item = await repos.GetRoleById(id);
-                if (item != null)
-                {
-                    var res = await repos.DeleteRole(item);
-                    return res;
-                }
-            }else if (Table == "Device")
-            {
-                var item = await repos.GetDeviceById(id);
-                if (item != null)
-                {
-                    var res = await repos.DeleteDevice(item);
-                    return res;
-                }
-            }
-            else if (Table == "Workspace")
-            {
-                var item = await repos.GetWorkspaceById(id);
-                if (item != null)
-                {
-                    if (item.OrderId != 0)
-                    {
-                        var reservation = await repos.GetReservationById(item.OrderId);
-                        await repos.DeleteReservation(reservation);
-                    }
+        //    if (Table == "Employee")
+        //    {
+        //        var item = await repos.GetEmployeeById(id);
+        //        if (item != null)
+        //        {
+        //            var res = await repos.DeleteEmployee(item);
+        //            return res;
+        //        }
+        //    }
+        //    else if (Table == "Role")
+        //    {
+        //        var item = await repos.GetRoleById(id);
+        //        if (item != null)
+        //        {
+        //            var res = await repos.DeleteRole(item);
+        //            return res;
+        //        }
+        //    }else if (Table == "Device")
+        //    {
+        //        var item = await repos.GetDeviceById(id);
+        //        if (item != null)
+        //        {
+        //            var res = await repos.DeleteDevice(item);
+        //            return res;
+        //        }
+        //    }
+        //    else if (Table == "Workspace")
+        //    {
+        //        var item = await repos.GetWorkspaceById(id);
+        //        if (item != null)
+        //        {
+        //            if (item.OrderId != 0)
+        //            {
+        //                var reservation = await repos.GetReservationById(item.OrderId);
+        //                await repos.DeleteReservation(reservation);
+        //            }
 
-                        var res = await repos.DeleteWorkspace(item);
+        //                var res = await repos.DeleteWorkspace(item);
 
                     
 
-                    return res;
-                }
-            }
+        //            return res;
+        //        }
+        //    }
 
-            return false;
-        }
+        //    return false;
+        //}
 
         public async Task<ILookup<String, Device>> GetDevicesByType()
         {
-            List<Device> devices = await repos.GetDevices();
+            var d = await repos.GetAll<Device>();
+            List<Device> devices = d.ToList();
 
             ILookup<String, Device> devicesByType = devices.ToLookup(d => d.DeviceType);
             return devicesByType;
@@ -228,11 +270,11 @@ namespace HotDesk.Services
 
         public async Task<bool> ConfirmApplication(ConfirmApplicationModel model)
         {
-            Reservation reserv = await repos.GetReservationById(Convert.ToInt32(model.OrderId));
+            Reservation reserv = await repos.GetById<Reservation>(Convert.ToInt32(model.OrderId));
 
             reserv.IdStatus = 2;
 
-            await repos.UpdateReservation(reserv);
+            repos.Update(reserv);
 
             return true;
         }

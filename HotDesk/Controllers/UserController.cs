@@ -19,12 +19,10 @@ namespace HotDesk.Controllers
     [Authorize(Roles = "User")]
     public class UserController : Controller
     {
-        private UserService serv;
-        private readonly UserManager<Employee> userManager;
-        public UserController(HotDeskContext context)
+        private readonly IUserService serv;
+        public UserController(IUserService _serv)
         {
-            //userManager = _userManager;
-            serv = new UserService(context);
+            serv = _serv;
         }
 
         [HttpGet]
@@ -43,7 +41,7 @@ namespace HotDesk.Controllers
             var claim = claimsIdentity.FindFirst("Id");
             var userId = claim.Value;
 
-            await serv.Apply(model,Convert.ToInt32(userId));
+            await serv.Apply(model, Convert.ToInt32(userId));
 
 
 
@@ -69,10 +67,10 @@ namespace HotDesk.Controllers
         public async Task<IActionResult> UseSearch([FromBody] SearchModel model)
         {
             var _model = await serv.GetWorkspaceSearch(model);
-            
+
             return PartialView("WorkspacesView", _model);
         }
-    
+
         [HttpGet]
         public async Task<IActionResult> MyWorkspacesView()
         {

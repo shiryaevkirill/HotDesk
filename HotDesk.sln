@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31624.102
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HotDesk", "HotDesk\HotDesk.csproj", "{039C82D9-64C0-43A0-A7B1-FAF559A4F1F8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HotDesk", "HotDesk\HotDesk.csproj", "{039C82D9-64C0-43A0-A7B1-FAF559A4F1F8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HotDeskTest", "HotDeskTest\HotDeskTest.csproj", "{F43DDB95-D448-4354-98C7-1F3AD7F30F94}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{039C82D9-64C0-43A0-A7B1-FAF559A4F1F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{039C82D9-64C0-43A0-A7B1-FAF559A4F1F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{039C82D9-64C0-43A0-A7B1-FAF559A4F1F8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F43DDB95-D448-4354-98C7-1F3AD7F30F94}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F43DDB95-D448-4354-98C7-1F3AD7F30F94}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F43DDB95-D448-4354-98C7-1F3AD7F30F94}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F43DDB95-D448-4354-98C7-1F3AD7F30F94}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

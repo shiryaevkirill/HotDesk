@@ -15,7 +15,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-
+using HotDesk.Services;
+using HotDesk.Repositories;
 
 namespace HotDesk
 {
@@ -36,12 +37,6 @@ namespace HotDesk
             services.AddDbContext<HotDeskContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("HotDeskContext")));
 
-            //services.AddIdentity<IdentityUser, IdentityRole>(options =>
-            //{
-            //    options.User.RequireUniqueEmail = false;
-            //})
-            //.AddEntityFrameworkStores<HotDeskContext>()
-            //.AddDefaultTokenProviders();
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options =>
@@ -53,6 +48,9 @@ namespace HotDesk
             services.AddAntiforgery();
 
             services.AddControllers().AddNewtonsoftJson();
+            services.AddScoped<IRepository, Repository>();
+            services.AddScoped<IAdminService, AdminService>();
+            services.AddScoped<IUserService, UserService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -84,39 +84,6 @@ namespace HotDesk.Controllers
         {
             return View();
         }
-        //[Authorize(Roles = "Admin")]
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Register(RegisterModel model)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        Employee employee = await context.Employee.FirstOrDefaultAsync(u => u.Login == model.Login);
-        //        if (employee == null)
-        //        {
-        //            employee = new Employee
-        //            {
-        //                Name = model.Name,
-        //                Surname = model.Surname,
-        //                Login = model.Login,
-        //                Password = model.Password
-        //            };
-        //            Role userRole = await context.Role.FirstOrDefaultAsync(r => r.RoleName == "User");
-        //            if (userRole != null)
-        //                employee.IdRole = userRole.Id;
-
-        //            context.Employee.Add(employee);
-        //            await context.SaveChangesAsync();
-
-
-        //            return RedirectToAction("Login");
-        //        }
-        //        else
-        //            ModelState.AddModelError("", "Некорректные логин и(или) пароль");
-        //    }
-        //    return View(model);
-        //}
-
 
         private async Task Authenticate(Employee employee, string NameRole)
         {

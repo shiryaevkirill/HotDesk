@@ -17,11 +17,11 @@ namespace HotDesk.Controllers
     [Authorize(Roles = "Admin")]
     public class AdminController : Controller
     {
-        private AdminService serv;
+        private readonly IAdminService serv;
 
-        public AdminController(HotDeskContext _context)
+        public AdminController(IAdminService _serv)
         {
-            serv = new AdminService(_context);
+            serv = _serv;
         }
 
         [HttpGet]
@@ -43,27 +43,26 @@ namespace HotDesk.Controllers
         [ValidateAntiForgeryToken]
         [Consumes("application/json")]
         [Produces("application/json")]
-        public async Task<JsonResult> AddEmployee([FromBody] AddEmployeeModel model)
+        public JsonResult AddEmployee([FromBody] AddEmployeeModel model)
         {
-           
-            bool result = await serv.AddEmployee(model);
-            if (result)
-            {
-                return Json(true);
-            }
 
-            return Json(PartialView("AddEmployee", model));
+            serv.Add(model);
+
+
+
+            return Json(true);
+
         }
 
-        public async Task<JsonResult> CheckLogin(string login)
+        public JsonResult CheckLogin(string Login)
         {
-            var result = await serv.CheckLogin(login);
+            var result = serv.Check<Employee>(u => u.Login == Login);
             return Json(result);
         }
 
-        public async Task<JsonResult> CheckRoleName(string RoleName)
+        public JsonResult CheckRoleName(string RoleName)
         {
-            var result = await serv.CheckRoleName(RoleName);
+            var result = serv.Check<Role>(u => u.RoleName == RoleName);
             return Json(result);
         }
 
@@ -76,22 +75,38 @@ namespace HotDesk.Controllers
         [HttpPost]
         [Consumes("application/json")]
         [Produces("application/json")]
-        public async Task<JsonResult> Delete([FromBody] DeleteModel _model)
+        public JsonResult Delete([FromBody] DeleteModel _model)
         {
 
-            int id = Convert.ToInt32(_model.Id);
-            var res = await serv.Delete(id, _model.Table);
+            var Table = _model.Table;
 
-            return Json(res);
+            if (Table == "Employee")
+            {
+                serv.Delete<Employee>(Convert.ToInt32(_model.Id));
+            }
+            else if (Table == "Role")
+            {
+                serv.Delete<Role>(Convert.ToInt32(_model.Id));
+            }
+            else if (Table == "Device")
+            {
+                serv.Delete<Device>(Convert.ToInt32(_model.Id));
+            }
+            else if (Table == "Workspace")
+            {
+                serv.Delete<Workplace>(Convert.ToInt32(_model.Id));
+            }
+
+            return Json(true);
         }
 
 
 
         [HttpGet]
-        public async Task<IActionResult> RolesEditor()
+        public IActionResult RolesEditor()
         {
-            var model = await serv.GetRoles();
-            return PartialView("RolesEditor", model);
+            var model = serv.GetAll<Role>(r => r.RoleName != "Admin");
+            return PartialView("RolesEditor", model.ToList());
         }
 
 
@@ -106,11 +121,11 @@ namespace HotDesk.Controllers
         [ValidateAntiForgeryToken]
         [Consumes("application/json")]
         [Produces("application/json")]
-        public async Task<JsonResult> AddRole([FromBody] Role model)
+        public JsonResult AddRole([FromBody] Role model)
         {
-            bool result = await serv.AddRole(model);
+            serv.Add(model);
                
-            return Json(result);
+            return Json(true);
                 
            
         }
@@ -119,7 +134,7 @@ namespace HotDesk.Controllers
         [HttpGet]
         public async Task<IActionResult> DevicesEditor()
         {
-            var model = await serv.GetDevices();
+            var model = await serv.GetAll<Device>();
             return PartialView("DevicesEditor", model);
         }
 
@@ -135,12 +150,10 @@ namespace HotDesk.Controllers
         [ValidateAntiForgeryToken]
         [Consumes("application/json")]
         [Produces("application/json")]
-        public async Task<JsonResult> AddDevice([FromBody] Device model)
+        public JsonResult AddDevice([FromBody] Device model)
         {
-            bool result = await serv.AddDevice(model);
-            return Json(result);
-
-
+            serv.Add(model);
+            return Json(true);
         }
 
 
@@ -165,10 +178,10 @@ namespace HotDesk.Controllers
         [ValidateAntiForgeryToken]
         [Consumes("application/json")]
         [Produces("application/json")]
-        public async Task<JsonResult> AddWorkspace([FromBody] AddWorkspaceModel model)
+        public JsonResult AddWorkspace([FromBody] AddWorkspaceModel model)
         {
-            bool result = await serv.AddWorkspace(model);
-            return Json(result);
+            serv.Add(model);
+            return Json(true);
         }
 
         [HttpPost]

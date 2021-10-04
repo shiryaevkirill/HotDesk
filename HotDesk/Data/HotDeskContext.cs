@@ -9,10 +9,11 @@ namespace HotDesk.Data
 {
     public class HotDeskContext : DbContext
     {
-        public HotDeskContext (DbContextOptions<HotDeskContext> options) : base(options)
+        public HotDeskContext(DbContextOptions<HotDeskContext> options) : base(options)
         {
 
         }
+
 
         public DbSet<HotDesk.Models.DbModels.Employee> Employee { get; set; }
         public DbSet<HotDesk.Models.DbModels.Role> Role { get; set; }
